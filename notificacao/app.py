@@ -11,7 +11,7 @@ from uuid import uuid4
 # Email 
 import smtplib
 from email.message import EmailMessage
-from secret import EMAIL_ADRESS,EMAIL_PASSWORD
+from secret import EMAIL_ADRESS,EMAIL_PASSWORD,SENDER_EMAIL
 
 msg = EmailMessage()
 
@@ -20,7 +20,7 @@ def sendEmail(subject,content):
     msg = EmailMessage()
     msg['subject'] = subject
     msg['From'] = EMAIL_ADRESS
-    msg['To'] = 'edvandearaujo2@hotmail.com'
+    msg['To'] = SENDER_EMAIL
     msg.set_content(content)
 
     with smtplib.SMTP_SSL('smtp.gmail.com',465) as smtp:
