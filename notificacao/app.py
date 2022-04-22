@@ -1,17 +1,15 @@
-from PIL import Image, ImageOps
-import os
+
 from confluent_kafka import Consumer, KafkaError
 import json
 import logging
-from time import sleep
-import time 
-from uuid import uuid4
 
-
-# Email 
+# Email MOdules 
+import os 
 import smtplib
 from email.message import EmailMessage
+
 from secret import EMAIL_ADRESS,EMAIL_PASSWORD,SENDER_EMAIL
+
 # telegramMensage
 import requests
 
@@ -65,9 +63,13 @@ try:
             data = json.loads(msg.value())
             filename = data['new_file']
             datatype = data['MensageType']
+            try:
+                sendEmail(f'Serviço {datatype} foi Usado ',f'A foto {filename} usou o serviço de {datatype}')
+                sendMensage(f'Serviço {datatype} foi Usado A foto {filename} usou o serviço de {datatype}')
+            except:
+                print("Ouve um erro ")
+
             
-            sendEmail(f'Serviço {datatype} foi Usado ',f'A foto {filename} usou o serviço de {datatype}')
-            sendMensage(f'Serviço {datatype} foi Usado A foto {filename} usou o serviço de {datatype}')
         elif msg.error().code() == KafkaError._PARTITION_EOF:
             logging.warning('End of partition reached {0}/{1}'
                   .format(msg.topic(), msg.partition()))
