@@ -1,6 +1,6 @@
 from PIL import Image, ImageOps
 import os
-from confluent_kafka import Consumer, KafkaError,Producer
+from confluent_kafka import Consumer, KafkaError
 import json
 import logging
 from time import sleep
@@ -12,6 +12,8 @@ from uuid import uuid4
 import smtplib
 from email.message import EmailMessage
 from secret import EMAIL_ADRESS,EMAIL_PASSWORD,SENDER_EMAIL
+# telegramMensage
+import requests
 
 msg = EmailMessage()
 
@@ -27,6 +29,14 @@ def sendEmail(subject,content):
         smtp.login(EMAIL_ADRESS,EMAIL_PASSWORD)
         smtp.send_message(msg)
 
+# funçao que ira mandar a mensagem do telegram
+
+def sendMensage(mensage):
+    token = '5312728318:AAFmGvZMbTMeHG-OnjVnGglCHBeU4Pb3tHs'
+    chat_id = '5252193765'
+    mensagem = mensage
+    URL = "https://api.telegram.org/bot"+token+"/sendMessage?chat_id="+chat_id+"&text="+mensagem
+    requests.get(URL)
 
 
 
@@ -57,7 +67,7 @@ try:
             datatype = data['MensageType']
             
             sendEmail(f'Serviço {datatype} foi Usado ',f'A foto {filename} usou o serviço de {datatype}')
-            
+            sendMensage(f'Serviço {datatype} foi Usado A foto {filename} usou o serviço de {datatype}')
         elif msg.error().code() == KafkaError._PARTITION_EOF:
             logging.warning('End of partition reached {0}/{1}'
                   .format(msg.topic(), msg.partition()))
